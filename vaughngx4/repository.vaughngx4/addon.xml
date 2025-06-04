@@ -1,0 +1,12 @@
+<addon id="repository.vaughngx4" name="vaughnGx4 Kodi Repo" version="1.0.0" provider-name="vaughngx4">
+    <extension point="xbmc.addon.repository" name="vaughnGx4 Kodi Repo">
+        <info compressed="false">https://vaughngx4.github.io/kodi.repo/addons.xml</info>
+        <checksum>https://vaughngx4.github.io/kodi.repo/addons.xml.md5</checksum>
+        <datadir zip="true">https://vaughngx4.github.io/kodi.repo/zips/</datadir>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary>Home of KodiSeerr</summary>
+        <description>Kodi addon repo for plugin.video.kodiseerr</description>
+        <platform>all</platform>
+    </extension>
+</addon>
