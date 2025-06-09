@@ -6,7 +6,7 @@ import shutil
 import xml.etree.ElementTree as ET
 
 # --- CONFIGURATION ---
-addon_dirs = ["./zips", "./repository.vaughngx4"]
+addon_dirs = ["./zips"]
 seerr_source_dir = "../KodiSeerr"
 seerr_target_dir = "./zips/plugin.video.kodiseerr"
 seerr_addon_id = "plugin.video.kodiseerr"
@@ -26,7 +26,7 @@ for addons_path in addon_dirs:
                     addons.append(xml_data)
 
 addons_xml = '<?xml version="1.0" encoding="UTF-8"?>\n<addons>\n' + "\n".join(addons) + '\n</addons>'
-with open("addons.xml", "w", encoding="utf-8-sig") as f:
+with open("addons.xml", "w", encoding="utf-8") as f:
     f.write(addons_xml)
 
 md5 = hashlib.md5(addons_xml.encode("utf-8")).hexdigest()
