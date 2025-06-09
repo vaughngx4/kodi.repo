@@ -40,6 +40,13 @@ output_zip_name = f"{repo_id}-{version}.zip"
 output_zip_path = f"./{output_zip_name}"
 destination_path = os.path.join(source_dir, output_zip_name)
 
+def sha256_of_file(file_path):
+    sha256_hash = hashlib.sha256()
+    with open(file_path, "rb") as f:
+        for chunk in iter(lambda: f.read(4096), b""):
+            sha256_hash.update(chunk)
+    return sha256_hash.hexdigest()
+
 def zip_repo(source_dir, output_zip_path, destination_path):
     if os.path.exists(destination_path):
         os.remove(destination_path)
@@ -89,3 +96,10 @@ for file_name in ["addon.xml", "fanart.jpg", "icon.png"]:
     dst = os.path.join(seerr_target_dir, file_name)
     shutil.copy2(src, dst)
     print(f"Copied {file_name} to {dst}")
+
+# Generate sha256sum of plugin zip
+hash_value = sha256_of_file(target_zip_path)
+sha256_path = os.path.join(seerr_target_dir, target_zip_name + ".sha256")
+with open(sha256_path, "w", encoding="utf-8") as f:
+    f.write(hash_value)
+    print(f"Created sha256sum {sha256_path}")
