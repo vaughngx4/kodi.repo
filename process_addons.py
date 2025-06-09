@@ -5,40 +5,32 @@ import zipfile
 import shutil
 import xml.etree.ElementTree as ET
 
-ADDONS_DIR = './zips'
-OUTPUT_XML = 'addons.xml'
-OUTPUT_MD5 = 'addons.xml.md5'
-
 # --- CONFIGURATION ---
-addon_dir = "./zips"
+addons_path = "./zips"
 seerr_source_dir = "../KodiSeerr"
 seerr_target_dir = "./zips/plugin.video.kodiseerr"
 seerr_addon_id = "plugin.video.kodiseerr"
 seerr_files = ["plugin.video.kodiseerr.zip", "addon.xml", "fanart.jpg", "icon.png"]
 
 # --- STEP 1: BUILD addons.xml and addons.xml.md5 ---
-def get_addon_xml(addon_path):
-    return open(os.path.join(addon_path, 'addon.xml'), encoding='utf-8').read()
+addons = []
 
-def write_addons_xml():
-    addons = []
-    for addon in os.listdir(ADDONS_DIR):
-        addon_path = os.path.join(ADDONS_DIR, addon)
-        if os.path.isdir(addon_path):
-            for f in os.listdir(addon_path):
-                if f.endswith('.zip'):
-                    continue
-            xml = get_addon_xml(addon_path)
-            addons.append(xml.strip())
+for root, dirs, files in os.walk(addons_path):
+    for f in files:
+        if f == "addon.xml":
+            full_path = os.path.join(root, f)
+            with open(full_path, "r", encoding="utf-8") as file:
+                xml_data = file.read().strip()
+                xml_data = re.sub(r'<\?xml[^>]+\?>', '', xml_data).strip()
+                addons.append(xml_data)
 
-    full_xml = "\n".join(addons) + "\n"
+addons_xml = '<?xml version="1.0" encoding="UTF-8"?>\n<addons>\n' + "\n".join(addons) + '\n</addons>'
+with open("addons.xml", "w", encoding="utf-8") as f:
+    f.write(addons_xml)
 
-    with open(OUTPUT_XML, 'w', encoding='utf-8') as f:
-        f.write(full_xml)
-
-    md5 = hashlib.md5(full_xml.encode('utf-8')).hexdigest()
-    with open(OUTPUT_MD5, 'w') as f:
-        f.write(md5)
+md5 = hashlib.md5(addons_xml.encode("utf-8")).hexdigest()
+with open("addons.xml.md5", "w") as f:
+    f.write(md5)
 
 # --- STEP 2: ZIP repository ---
 repo_id = "repository.vaughngx4"
@@ -97,6 +89,3 @@ for file_name in ["addon.xml", "fanart.jpg", "icon.png"]:
     dst = os.path.join(seerr_target_dir, file_name)
     shutil.copy2(src, dst)
     print(f"Copied {file_name} to {dst}")
-
-if __name__ == "__main__":
-    write_addons_xml()
